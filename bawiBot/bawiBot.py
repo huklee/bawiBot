@@ -1,5 +1,8 @@
+import re
 import time
 from selenium import webdriver
+from slacker import Slacker
+from bs4 import BeautifulSoup 
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait as wait
@@ -13,12 +16,6 @@ def getBawiDriver():
     wait(driver, 10).until(EC.element_to_be_clickable((By.ID, "login_passwd"))).send_keys("yourPasswd")
     wait(driver, 10).until(EC.element_to_be_clickable((By.ID, "login_submit"))).click()
     return driver
-
-# For Making Test
-
-import re
-from bs4 import BeautifulSoup 
-
 
 # Return new Posts from the boardTail
 def getNewPosts(driver, boardTail, readPostsIdSet):
@@ -64,16 +61,6 @@ def init():
     boardTail = "read.cgi?bid=588"
     readPostsId = set()
 
-# Test
-# pp = ""
-
-# getNewPosts(boardTail, readPostsId)
-
-from bs4 import BeautifulSoup 
-
-# boardList = {"#jobs":"read.cgi?bid=8", "#wedding_funeral":"read.cgi?bid=638"}
-# readPostsIdSet = {"read.cgi?bid=8" : set(),
-#                  "read.cgi?bid=638": set()}
 
 def checkNewPosts(driver, boardList, readPostsIdSet):
     assert set(boardList.values()) == set(readPostsIdSet.keys())
@@ -87,7 +74,6 @@ def checkNewPosts(driver, boardList, readPostsIdSet):
         print(newPosts)
         notifySlack(driver, key, newPosts)
 
-from slacker import Slacker
 
 def sendSlackMsg(channel, pretext, title, text, color="good"):
     token = 'your-token'
@@ -108,13 +94,6 @@ def sendSlackMsg(channel, pretext, title, text, color="good"):
     }]
     
     slack.chat.post_message(channel, attachments=att)    
-    
-# Example Case    
-# sendSlackMsg("#test", "hello", "Title", "Content", "good")
-
-newPosts = {'517': ('test4', 'read.cgi?bid=588;tno=482;p=34'),
-             '518': ('test5', 'read.cgi?bid=588;tno=483;p=34')}
-newPosts
 
 def notifySlack(driver, channel, posts):
     boardHead = "https://www.bawi.org/board/"
@@ -137,5 +116,3 @@ def notifySlack(driver, channel, posts):
         # 02. send the msg through slack
         sendSlackMsg(channel, boardHead + urlTail, title, text)
             
-# Test for notify via Slack
-# notifySlack(newPosts)
