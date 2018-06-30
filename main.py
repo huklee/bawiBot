@@ -1,9 +1,10 @@
 import pickle
+import sys
 from bawiBot.bawiBot import *
 
 boardList, readPostsIdSet = "", ""
 
-def run():
+def run(uid, passwd, slackToken):
     global boardList, readPostsIdSet
     
     # Load the Memory 
@@ -11,8 +12,8 @@ def run():
     readPostsIdSet = pickle.load(open("readPostsIdSet.pkl", "br"))
     
     # Run the agent
-    driver = getBawiDriver()
-    checkNewPosts(driver, boardList, readPostsIdSet)
+    driver = getBawiDriver(uid, passwd)
+    checkNewPosts(driver, boardList, readPostsIdSet, slackToken)
     driver.quit()
     
     # Read the Memory
@@ -20,4 +21,8 @@ def run():
     pickle.dump(readPostsIdSet, open("readPostsIdSet.pkl", "wb"))
     
 if __name__ == "__main__":
-	run()
+	if len(sys.argv) < 4:
+		print("usage : python main.py [bawiId] [bawiPasswd] [slackbotToken]")
+		exit()
+	
+	run(sys.argv[1], sys.argv[2], sys.argv[3])
