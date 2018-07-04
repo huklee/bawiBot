@@ -7,7 +7,8 @@ bawi Crawling bot for Python3
  * pip3 install Slacker
 
 ## For Ubuntu
- * Download Chrome Driver from  
+ * Download Chrome Driver from below
+   https://sites.google.com/a/chromium.org/chromedriver/downloads
 
 
 ## For Raspberry Pi 3
