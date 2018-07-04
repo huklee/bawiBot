@@ -7,7 +7,7 @@ boardList, readPostsIdSet = "", ""
 def run(uid, passwd, slackToken):
     global boardList, readPostsIdSet
     
-    # Load the Memory 
+    # Load the Read List 
     boardList = pickle.load(open("boardList.pkl", "br"))
     readPostsIdSet = pickle.load(open("readPostsIdSet.pkl", "br"))
     
@@ -16,7 +16,7 @@ def run(uid, passwd, slackToken):
     checkNewPosts(driver, boardList, readPostsIdSet, slackToken)
     driver.quit()
     
-    # Read the Memory
+    # Write the Read List
     pickle.dump(boardList, open("boardList.pkl", "wb"))
     pickle.dump(readPostsIdSet, open("readPostsIdSet.pkl", "wb"))
     
