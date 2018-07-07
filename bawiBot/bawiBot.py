@@ -1,5 +1,6 @@
 import re
 import time
+import platform 
 from selenium import webdriver
 from slacker import Slacker
 from bs4 import BeautifulSoup 
@@ -8,8 +9,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
+if "armv7" in platform.platform():
+    isRPi = True
+    from pyvirtualdisplay import Display
+else:
+    isRPi = False
+
 def getBawiDriver(uid, passwd):
-    driver = webdriver.Chrome("/Users/huklee/Work/crawling/chromedriver")
+    global isRPi
+
+    if isRPi == True:
+        display = Display(visible=0, size=(800, 600))
+        display.start()
+        driver = webdriver.Firefox()
+    else:
+        driver = webdriver.Chrome("/Users/huklee/Work/crawling/chromedriver")    
     driver.get("http://www.bawi.org")
 
     wait(driver, 10).until(EC.element_to_be_clickable((By.ID, "login_id"))).send_keys(uid)
