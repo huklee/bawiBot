@@ -74,6 +74,15 @@ def checkNewPosts(driver, boardList, readPostsIdSet, slackToken):
         print(newPosts)
         notifySlack(driver, key, newPosts, slackToken)
 
+def sendSlackMsgSimple(token, channel, pretext):
+    slack = Slacker(token)
+    nowTime = time.time()  # unix_time_stamp
+    
+    att = [{
+            "pretext": pretext,
+    }]
+    
+    slack.chat.post_message(channel, attachments=att)    
 
 def sendSlackMsg(token, channel, pretext, title, text, color="good"):
     slack = Slacker(token)

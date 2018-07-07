@@ -1,6 +1,7 @@
 import pickle
 import sys
 from bawiBot.bawiBot import *
+import datetime
 
 boardList, readPostsIdSet = "", ""
 
@@ -26,3 +27,4 @@ if __name__ == "__main__":
 		exit()
 	
 	run(sys.argv[1], sys.argv[2], sys.argv[3])
+	sendSlackMsgSimple(sys.argv[3], "#test", "new posts checked, "+str(datetime.datetime.now()))                                                                                                                   
