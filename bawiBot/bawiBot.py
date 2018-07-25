@@ -69,9 +69,33 @@ def getNewPosts(driver, boardTail, readPostsIdSet):
     
     return newPosts
 
+
+"""
+assume that current page is a board post page
+return (authorKi, authorName)
+"""
+def getAuthorInfo(driver):
+    # get author Name
+    urlHead = "https://www.bawi.org/"
+    html = driver.page_source
+    soup = BeautifulSoup(html, "html.parser")
+    pasts = soup.select("#content > ul > li.author > a.user-profile")
+
+    authorName = pasts[0].text    
+
+    # get author Ki
+    urlTail = pasts[0]["href"]
+    driver.get(urlHead + urlTail)
+    html = driver.page_source
+    soup = BeautifulSoup(html, "html.parser")
+    posts = soup.select("body > div > table > tbody > tr > td > h2 > a")
+    authorKi = posts[0].text
+
+    return (authorKi, authorName)
+
 def init():
     boardHead = "https://www.bawi.org/board/"
-    # boardList = {"구인/구직":"read.cgi?bid=8", "결혼":"read.cgi?bid=638"}
+    #https://www.bawi.org/board/read.cgi?bid=638&aid=1704810 boardList = {"구인/구직":"read.cgi?bid=8", "결혼":"read.cgi?bid=638"}
     boardTail = "read.cgi?bid=588"
     readPostsId = set()
 
@@ -125,6 +149,10 @@ def notifySlack(driver, channel, posts, slackToken):
         print("[NEW POST]", urlTail)
         driver.get(boardHead + urlTail)
 
+        # DEV...
+        print(getAuthorInfo(driver))
+
+        driver.get(boardHead + urlTail)
         html = driver.page_source
 
         soup = BeautifulSoup(html, "html.parser")
@@ -134,6 +162,7 @@ def notifySlack(driver, channel, posts, slackToken):
             i.replaceWith("\n")
 
         text = content[0].text
+        title = ("[%s/%s]" % (getAuthorInfo(driver))) + title
 
         # 02. send the msg through slack
         sendSlackMsg(slackToken, channel, boardHead + urlTail, title, text)
